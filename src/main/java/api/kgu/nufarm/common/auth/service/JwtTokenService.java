@@ -5,6 +5,7 @@ import api.kgu.nufarm.application.user.entity.User;
 import api.kgu.nufarm.application.user.service.UserService;
 import api.kgu.nufarm.common.auth.dao.TokenRepository;
 import api.kgu.nufarm.common.auth.dto.JwtTokenDto;
+import api.kgu.nufarm.common.auth.dto.LoginRequestDto;
 import api.kgu.nufarm.common.auth.jwt.JwtTokenProvider;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +24,10 @@ public class JwtTokenService {
     private final TokenRepository tokenRepository;
 
     // 로그인
-    public JwtTokenDto login(String email, String password) {
-        User user = userService.findByEmail(email);
-        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
-            log.warn("Invalid email or password: {}", email);
+    public JwtTokenDto login(LoginRequestDto loginRequestDto) {
+        User user = userService.findByEmail(loginRequestDto.getEmail());
+        if (user == null || !passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
+            log.warn("Invalid email or password: {}", loginRequestDto.getEmail());
             return null;
         }
         JwtTokenDto tokenDto = jwtTokenProvider.generateToken(user.getId(), user.getRole());

@@ -3,6 +3,7 @@ package api.kgu.nufarm.common.auth.api;
 import api.kgu.nufarm.application.user.dto.request.UserRequestDto;
 import api.kgu.nufarm.application.user.service.UserService;
 import api.kgu.nufarm.common.auth.dto.JwtTokenDto;
+import api.kgu.nufarm.common.auth.dto.LoginRequestDto;
 import api.kgu.nufarm.common.auth.service.JwtTokenService;
 import api.kgu.nufarm.common.util.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,10 +32,9 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(summary = "로그인")
     public ApiResponse<JwtTokenDto> login(
-            @RequestParam String email,
-            @RequestParam String password
+            @RequestBody LoginRequestDto loginRequestDto
     ) {
-        JwtTokenDto tokenDto = jwtTokenService.login(email, password);
+        JwtTokenDto tokenDto = jwtTokenService.login(loginRequestDto);
 
         if(tokenDto == null) {
             return ApiResponse.fail("인증 정보가 틀립니다.");
@@ -44,7 +44,9 @@ public class AuthController {
 
     @PostMapping("/logout")
     @Operation(summary = "로그아웃")
-    public ApiResponse<String> logout(@RequestParam Long userId) {
+    public ApiResponse<String> logout(
+            @RequestParam Long userId
+    ) {
         jwtTokenService.logout(userId);
         return ApiResponse.success("로그아웃에 성공했습니다.");
     }
