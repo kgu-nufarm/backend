@@ -1,0 +1,53 @@
+server:
+  port: 8123
+
+spring:
+  mvc:
+    log-resolved-exception: true
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.jdbc.time_zone: UTC
+    show-sql: false
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  data:
+    redis:
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 10
+          min-idle: 2
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: #{REDIS_PASSWORD}
+
+security:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}
+    access-expiration: 86400  # 1일
+    refresh-expiration: 1209600  # 2주
+
+springdoc:
+  packages-to-scan: api.kgu.nufarm
+  api-docs:
+    path: /api-docs
+    enabled: true
+  swagger-ui:
+    groups-order: asc
+    tags-sorter: alpha
+    operations-sorter: alpha
+    display-request-duration: true
+    doc-expansion: none
+  cache:
+    disabled: true
+  model-and-view-allowed: true
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
