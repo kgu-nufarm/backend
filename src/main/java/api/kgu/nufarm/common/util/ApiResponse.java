@@ -3,13 +3,6 @@ package api.kgu.nufarm.common.util;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -39,19 +32,9 @@ public class ApiResponse<T> {
         return new ApiResponse<>(SUCCESS_STATUS, null, null);
     }
 
-    // validation 실패
-    public static ApiResponse<?> fail(BindingResult bindingResult) {
-        Map<String, String> errors = new HashMap<>();
-
-        List<ObjectError> allErrors = bindingResult.getAllErrors();
-        for (ObjectError error : allErrors) {
-            if (error instanceof FieldError) {
-                errors.put(((FieldError) error).getField(), error.getDefaultMessage());
-            } else {
-                errors.put( error.getObjectName(), error.getDefaultMessage());
-            }
-        }
-        return new ApiResponse<>(FAIL_STATUS, errors, null);
+    // 실패 시
+    public static <T> ApiResponse<T> fail(String message) {
+        return new ApiResponse<>(FAIL_STATUS, null, message);
     }
 
     // 에러 반환 시
