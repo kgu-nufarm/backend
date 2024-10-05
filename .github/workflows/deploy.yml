@@ -68,11 +68,11 @@ jobs:
 
         # 기존의 컨테이너 중지
         - name: docker stop container
-          run: sudo docker stop $(sudo docker ps -q) 2>/dev/null || true
+          run: sudo docker stop springapp 2>/dev/null || true
 
         # 최신 이미지를 컨테이너화하여 실행
         - name: docker run new container
-          run: sudo docker run --name github-actions-demo --rm -d -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo
+          run: sudo docker run --name springapp --rm -d -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo
 
         # 미사용 이미지 정리
         - name: delete old docker image
