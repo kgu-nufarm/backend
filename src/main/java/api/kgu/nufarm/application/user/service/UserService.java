@@ -4,8 +4,12 @@ import api.kgu.nufarm.application.user.dao.UserRepository;
 import api.kgu.nufarm.application.user.dto.request.UserRequestDto;
 import api.kgu.nufarm.application.user.entity.Role;
 import api.kgu.nufarm.application.user.entity.User;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +38,21 @@ public class UserService {
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+
+            if (principal instanceof UserDetails) {
+                Long id = Long.valueOf(((UserDetails) principal).getUsername());
+                return userRepository.findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("User not found"));
+            }
+            return null;
+        }
+        return null;
     }
 }
