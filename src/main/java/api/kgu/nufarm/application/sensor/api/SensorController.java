@@ -64,23 +64,35 @@ public class SensorController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "조도 조회", description = "하루 동안, 한 시간 간격으로 조도를 조회합니다.")
-    @GetMapping("/lightIntensity/{id}")
-    public ApiResponse<List<Float>> getLightIntensity (
+    @GetMapping("/illuminance/{id}")
+    public ApiResponse<List<Float>> getIlluminance (
             @PathVariable Long id,
             @RequestParam LocalDate date
     ) {
-        List<Float> lightIntensities = sensorService.getLightIntensity(id, date);
-        return ApiResponse.success(lightIntensities);
+        List<Float> illuminances = sensorService.getIlluminance(id, date);
+        return ApiResponse.success(illuminances);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @Operation(summary = "가스 조회", description = "하루 동안, 한 시간 간격으로 가스를 조회합니다.")
-    @GetMapping("/gasLevel/{id}")
-    public ApiResponse<List<Float>> getGasLevel (
+    @Operation(summary = "토양 습도 조회", description = "하루 동안, 한 시간 간격으로 토양 습도를 조회합니다.")
+    @GetMapping("/soilMoisture/{id}")
+    public ApiResponse<List<Float>> getSoilMoisture (
             @PathVariable Long id,
             @RequestParam LocalDate date
     ) {
-        List<Float> gasLevels = sensorService.getGasLevel(id, date);
-        return ApiResponse.success(gasLevels);
+        List<Float> soilMoistures = sensorService.getSoilMoisture(id, date);
+        return ApiResponse.success(soilMoistures);
+    }
+
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "이산화탄소 조회", description = "하루 동안, 한 시간 간격으로 이산화탄소를 조회합니다.")
+    @GetMapping("/co2/{id}")
+    public ApiResponse<List<Float>> getCo2 (
+            @PathVariable Long id,
+            @RequestParam LocalDate date
+    ) {
+        List<Float> co2s = sensorService.getCo2(id, date);
+        return ApiResponse.success(co2s);
     }
 }

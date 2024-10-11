@@ -46,19 +46,27 @@ public class SensorService {
                 .toList();
     }
 
-    public List<Float> getLightIntensity(Long id, LocalDate date) {
+    public List<Float> getIlluminance(Long id, LocalDate date) {
         List<Sensor> sensors = getSensorsByIdAndDate(id, date);
         if(sensors == null) return null;
         return sensors.stream()
-                .map(Sensor::getLightIntensity)
+                .map(Sensor::getIlluminance)
                 .toList();
     }
 
-    public List<Float> getGasLevel(Long id, LocalDate date) {
+    public List<Float> getSoilMoisture(Long id, LocalDate date) {
         List<Sensor> sensors = getSensorsByIdAndDate(id, date);
         if(sensors == null) return null;
         return sensors.stream()
-                .map(Sensor::getGasLevel)
+                .map(Sensor::getSoilMoisture)
+                .toList();
+    }
+
+    public List<Float> getCo2(Long id, LocalDate date) {
+        List<Sensor> sensors = getSensorsByIdAndDate(id, date);
+        if(sensors == null) return null;
+        return sensors.stream()
+                .map(Sensor::getCo2)
                 .toList();
     }
 
