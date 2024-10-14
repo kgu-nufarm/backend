@@ -26,7 +26,6 @@ public class SensorController {
 
     private final SensorService sensorService;
 
-    @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "센서값 저장")
     @PostMapping("/addSensorResult/{id}")
     public ApiResponse<Long> addSensorResult (
