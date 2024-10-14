@@ -29,7 +29,7 @@ public class UserItemService {
     @Transactional
     public Long addUserItem(HttpServletRequest request, AddUserItemRequestDto dto, MultipartFile photoFile) {
         User currentUser = userService.getCurrentUser();
-        Item item = itemService.getItem(dto.getId());
+        Item item = itemService.findByItemId(dto.getId());
 
         String photoUrl = null;
         if (photoFile != null && !photoFile.isEmpty()) {

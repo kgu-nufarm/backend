@@ -1,6 +1,6 @@
 package api.kgu.nufarm.application.user.entity;
 
-import api.kgu.nufarm.application.cart.entity.CartItem;
+import api.kgu.nufarm.application.cart.entity.Cart;
 import api.kgu.nufarm.application.like.entity.LikeItem;
 import api.kgu.nufarm.application.user.dto.request.UserRequestDto;
 import api.kgu.nufarm.application.useritem.entity.UserItem;
@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,8 +46,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<LikeItem> likes; // 즐겨찾기 목록
 
-    @OneToMany(mappedBy = "user")
-    private List<CartItem> cartItems; // 장바구니 목록
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cart cart;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserItem> userItems; // 회원의 작물 목록
