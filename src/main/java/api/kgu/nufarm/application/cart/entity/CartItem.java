@@ -28,8 +28,8 @@ public class CartItem {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user; // 회원
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
 
     @ManyToOne
     @JoinColumn(name = "item_id")
@@ -37,4 +37,8 @@ public class CartItem {
 
     @Column(nullable = false)
     private int quantity; // 수량
+
+    public void addQuantity(int quantity) {
+        this.quantity += quantity;
+    }
 }
