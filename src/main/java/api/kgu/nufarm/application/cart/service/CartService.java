@@ -78,10 +78,13 @@ public class CartService {
 
     private Cart findCartByUser(User user) {
         return cartRepository.findByUserId(user.getId())
-                .orElse(Cart.builder()
-                        .user(user)
-                        .totalPrice(0)
-                        .build());
+                .orElseGet(() -> {
+                    Cart cart = Cart.builder()
+                            .user(user)
+                            .totalPrice(0)
+                            .build();
+                    return cartRepository.save(cart);
+                });
     }
 
     public Cart getCart(Long userId) {
