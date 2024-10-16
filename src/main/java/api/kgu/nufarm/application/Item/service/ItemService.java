@@ -5,9 +5,11 @@ import api.kgu.nufarm.application.Item.dto.ItemRequestDto;
 import api.kgu.nufarm.application.Item.dto.ItemResponseDto;
 import api.kgu.nufarm.application.Item.entity.Item;
 import api.kgu.nufarm.application.Item.entity.ItemCategory;
+import api.kgu.nufarm.common.file.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,10 +18,12 @@ import java.util.List;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    private final FileService fileService;
 
     @Transactional
-    public Long addItem(ItemRequestDto dto) {
-        Item item = ItemRequestDto.toEntity(dto);
+    public Long addItem(ItemRequestDto dto, MultipartFile file) {
+        String imageUrl = fileService.storeItemFile(file);
+        Item item = ItemRequestDto.toEntity(dto, imageUrl);
         return itemRepository.save(item).getId();
     }
 
