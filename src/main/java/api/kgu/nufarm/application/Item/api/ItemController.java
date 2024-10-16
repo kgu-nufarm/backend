@@ -7,13 +7,15 @@ import api.kgu.nufarm.common.util.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -27,11 +29,12 @@ public class ItemController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "물품 등록")
-    @PostMapping("/add")
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<Long> addItem(
-            @RequestBody ItemRequestDto dto
+            @RequestPart ItemRequestDto dto,
+            @RequestPart MultipartFile file
     ) {
-        Long id = itemService.addItem(dto);
+        Long id = itemService.addItem(dto, file);
         return ApiResponse.success(id);
     }
 

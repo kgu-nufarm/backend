@@ -9,7 +9,6 @@ import api.kgu.nufarm.application.useritem.dto.AddUserItemRequestDto;
 import api.kgu.nufarm.application.useritem.dto.UserItemResponseDto;
 import api.kgu.nufarm.application.useritem.entity.UserItem;
 import api.kgu.nufarm.common.file.service.FileService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,14 +26,12 @@ public class UserItemService {
     private final FileService fileService;
 
     @Transactional
-    public Long addUserItem(HttpServletRequest request, AddUserItemRequestDto dto, MultipartFile photoFile) {
+    public Long addUserItem(AddUserItemRequestDto dto, MultipartFile photoFile) {
         User currentUser = userService.getCurrentUser();
         Item item = itemService.findByItemId(dto.getId());
 
-        String photoUrl = null;
-        if (photoFile != null && !photoFile.isEmpty()) {
-            photoUrl = String.format("%s://%s:%d", request.getScheme(), request.getServerName(), request.getServerPort()) + fileService.storeFile(photoFile);
-        }
+        String photoUrl = fileService.storeUserItemFile(photoFile);
+
         UserItem userItem = UserItem.create(currentUser, item, dto, photoUrl);
         userItemRepository.save(userItem);
         return userItem.getId();
