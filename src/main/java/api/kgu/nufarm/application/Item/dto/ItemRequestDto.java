@@ -21,7 +21,6 @@ public class ItemRequestDto {
                 .price(itemRequestDto.getPrice())
                 .imageUrl(imageUrl)
                 .category(itemRequestDto.getCategory())
-                .isLike(false)
                 .build();
     }
 }

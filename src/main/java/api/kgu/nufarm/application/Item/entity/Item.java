@@ -45,9 +45,6 @@ public class Item {
     @Enumerated(EnumType.STRING)
     private ItemCategory category; // 상품 카테고리
 
-    @Column(nullable = false)
-    private Boolean isLike;  // 즐겨찾기 여부
-
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     private List<UserItem> userItems; // 제품을 선택한 사용자 목록
 }

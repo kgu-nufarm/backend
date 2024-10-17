@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +30,6 @@ public class LikeService {
                 .item(item)
                 .user(userService.getCurrentUser())
                 .build();
-        item.setIsLike(true);
-        itemRepository.save(item);
         return likeItemRepository.save(likeItem).getId();
     }
 
@@ -43,8 +40,6 @@ public class LikeService {
         LikeItem likeItem = likeItemRepository.findByItemIdAndUserId(item.getId(), user.getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당되는 아이템이 없습니다."));
         likeItemRepository.delete(likeItem);
-        item.setIsLike(false);
-        itemRepository.save(item);
         return likeItem.getId();
     }
 
