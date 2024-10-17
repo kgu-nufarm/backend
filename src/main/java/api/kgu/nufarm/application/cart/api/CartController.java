@@ -8,6 +8,7 @@ import api.kgu.nufarm.application.cart.service.CartService;
 import api.kgu.nufarm.common.util.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,7 +32,7 @@ public class CartController {
     @Operation(summary = "장바구니 추가")
     @PostMapping("/add")
     public ApiResponse<Long> addToCart(
-            @RequestBody AddCartRequestDto dto
+            @Valid @RequestBody AddCartRequestDto dto
     ) {
         Cart cart = cartService.addToCart(dto.getItemId(), dto.getQuantity());
         return ApiResponse.success(cart.getId());
@@ -50,8 +51,8 @@ public class CartController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "장바구니 조회")
     @GetMapping("/get")
-    public ApiResponse<List<CartResponseDto>> getCart() {
-        List<CartResponseDto> cartItems = cartService.getMyCartItems();
+    public ApiResponse<CartResponseDto> getCart() {
+        CartResponseDto cartItems = cartService.getMyCartItems();
         return ApiResponse.success(cartItems);
     }
 }
