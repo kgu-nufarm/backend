@@ -13,7 +13,6 @@ public class LikeResponseDto {
     private String description;
     private String imageUrl;
     private Integer price;
-    private boolean isLike;
 
     public static LikeResponseDto toDto(LikeItem likeItem) {
         return LikeResponseDto.builder()
@@ -22,7 +21,6 @@ public class LikeResponseDto {
                 .description(likeItem.getItem().getDescription())
                 .imageUrl(likeItem.getItem().getImageUrl())
                 .price(likeItem.getItem().getPrice())
-                .isLike(likeItem.getItem().getIsLike())
                 .build();
     }
 }

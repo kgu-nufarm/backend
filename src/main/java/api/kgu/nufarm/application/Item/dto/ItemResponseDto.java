@@ -14,13 +14,13 @@ public class ItemResponseDto {
     private String imageUrl;
     private boolean isLike;
 
-    public static ItemResponseDto toDto(Item item) {
+    public static ItemResponseDto toDto(Item item, boolean isLike) {
         return ItemResponseDto.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .price(item.getPrice())
                 .imageUrl(item.getImageUrl())
-                .isLike(item.getIsLike())
+                .isLike(isLike)
                 .build();
     }
 }
