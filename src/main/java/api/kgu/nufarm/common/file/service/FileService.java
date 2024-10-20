@@ -52,7 +52,6 @@ public class FileService {
     }
 
     public String storeItemFile(MultipartFile file) {
-        System.out.println(bucketName);
         try {
             String folder = "items";
             String fileName = file.getOriginalFilename();
