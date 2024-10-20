@@ -2,7 +2,7 @@ package api.kgu.nufarm.common.file.service;
 
 import api.kgu.nufarm.application.user.service.UserService;
 import api.kgu.nufarm.common.file.exception.FileStorageException;
-import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FileService {
 
-    private final AmazonS3 s3Client;
+    private final AmazonS3Client s3Client;
 
     private final UserService userService;
 
