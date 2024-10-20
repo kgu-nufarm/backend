@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FileService {
 
-    private final AmazonS3Client s3Client;
+    private final AmazonS3Client amazonS3Client;
 
     private final UserService userService;
 
@@ -42,7 +42,7 @@ public class FileService {
             // S3에 파일 업로드
             InputStream fileInputStream = file.getInputStream();
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, userFolder + "/" + fileName, fileInputStream, metadata);
-            s3Client.putObject(putObjectRequest);
+            amazonS3Client.putObject(putObjectRequest);
 
             // 저장된 파일의 경로 반환
             return "https://" + bucketName + ".s3.amazonaws.com/" + userFolder + "/" + fileName;
@@ -64,7 +64,7 @@ public class FileService {
             // S3에 파일 업로드
             InputStream fileInputStream = file.getInputStream();
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, folder + "/" + fileName, fileInputStream, metadata);
-            s3Client.putObject(putObjectRequest);
+            amazonS3Client.putObject(putObjectRequest);
 
             // 저장된 파일의 경로 반환
             return "https://" + bucketName + ".s3.amazonaws.com/" + folder + "/" + fileName;
