@@ -1,44 +1,75 @@
 package api.kgu.nufarm.common.file.service;
 
+import api.kgu.nufarm.application.user.service.UserService;
 import api.kgu.nufarm.common.file.exception.FileStorageException;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.time.LocalDate;
+import java.io.InputStream;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class FileService {
 
-    private final String uploadDir = "uploads/";
+    private final AmazonS3 s3Client;
 
-    public String storeFile(MultipartFile file) {
+    private final UserService userService;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
+
+    public String storeUserItemFile(MultipartFile file) {
         try {
-            // 날짜별로 폴더 생성 (예: uploads/2024/10/06/)
-            String dateFolder = LocalDate.now().toString().replace("-", "/"); // 년/월/일 폴더 생성
-            Path directoryPath = Paths.get(uploadDir + dateFolder);
+            // 현재 로그인된 사용자의 ID 가져오기
+            Long userId = userService.getCurrentUser().getId();
 
-            // 폴더가 없으면 생성
-            if (!Files.exists(directoryPath)) {
-                Files.createDirectories(directoryPath);  // 경로에 있는 모든 상위 폴더도 생성
-            }
-
-            // 파일명 처리 (중복 방지를 위해 UUID 사용)
+            // 사용자별 폴더 경로 생성
+            String userFolder = "user_" + userId;
             String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            Path filePath = directoryPath.resolve(fileName);  // 날짜별 폴더에 파일 저장 경로 설정
 
-            // 파일 저장
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            // 메타데이터 생성
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+            metadata.setContentType(file.getContentType());
 
-            // 저장된 파일의 경로 반환 (예: /uploads/2024/10/06/filename.jpg)
-            return "/uploads/" + dateFolder + "/" + fileName;
+            // S3에 파일 업로드
+            InputStream fileInputStream = file.getInputStream();
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, userFolder + "/" + fileName, fileInputStream, metadata);
+            s3Client.putObject(putObjectRequest);
+
+            // 저장된 파일의 경로 반환
+            return "https://" + bucketName + ".s3.amazonaws.com/" + userFolder + "/" + fileName;
         } catch (IOException e) {
-            throw new FileStorageException("Could not store file " + file.getOriginalFilename(), e);
+            throw new FileStorageException("파일을 저장할 수 없습니다: " + file.getOriginalFilename(), e);
+        }
+    }
+
+    public String storeItemFile(MultipartFile file) {
+        try {
+            String folder = "items";
+            String fileName = file.getOriginalFilename();
+
+            // 메타데이터 생성
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+            metadata.setContentType(file.getContentType());
+
+            // S3에 파일 업로드
+            InputStream fileInputStream = file.getInputStream();
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, folder + "/" + fileName, fileInputStream, metadata);
+            s3Client.putObject(putObjectRequest);
+
+            // 저장된 파일의 경로 반환
+            return "https://" + bucketName + ".s3.amazonaws.com/" + folder + "/" + fileName;
+        } catch (IOException e) {
+            throw new FileStorageException("파일을 저장할 수 없습니다: " + file.getOriginalFilename(), e);
         }
     }
 }

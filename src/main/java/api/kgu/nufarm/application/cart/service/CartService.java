@@ -5,6 +5,7 @@ import api.kgu.nufarm.application.Item.service.ItemService;
 import api.kgu.nufarm.application.cart.dao.CartItemRepository;
 import api.kgu.nufarm.application.cart.dao.CartRepository;
 import api.kgu.nufarm.application.cart.dto.CartResponseDto;
+import api.kgu.nufarm.application.cart.dto.CartSimpleResponseDto;
 import api.kgu.nufarm.application.cart.entity.Cart;
 import api.kgu.nufarm.application.cart.entity.CartItem;
 import api.kgu.nufarm.application.user.entity.User;
@@ -46,20 +47,25 @@ public class CartService {
         Cart cart = getCart(user.getId());
         CartItem cartItem = getCartItemByCartAndItem(cart, itemService.getItem(itemId));
 
-        cart.minusTotalPrice(cartItem.getItem().getPrice() * cartItem.getQuantity());
-        cartItemRepository.delete(cartItem);
+        cartItem.minusQuantity(1);
+        cart.minusTotalPrice(cartItem.getItem().getPrice());
+        if(cartItem.getQuantity() == 0) {
+            cartItemRepository.delete(cartItem);
+        }
         return cartRepository.save(cart);
     }
 
-    public List<CartResponseDto> getMyCartItems() {
+    public CartResponseDto getMyCartItems() {
         User user = userService.getCurrentUser();
         Cart cart = findCartByUser(user);
         if(cart.getCartItems() == null || cart.getCartItems().isEmpty()) {
             return null;
         }
-        return cart.getCartItems().stream()
-                .map(CartResponseDto::toDto)
+        List<CartSimpleResponseDto> items = cart.getCartItems().stream()
+                .map(CartSimpleResponseDto::toDto)
                 .toList();
+
+        return CartResponseDto.of(items, cart.getTotalPrice());
     }
 
     private CartItem findCartItemByCartAndItem(Cart cart, Item item) {
@@ -78,10 +84,13 @@ public class CartService {
 
     private Cart findCartByUser(User user) {
         return cartRepository.findByUserId(user.getId())
-                .orElse(Cart.builder()
-                        .user(user)
-                        .totalPrice(0)
-                        .build());
+                .orElseGet(() -> {
+                    Cart cart = Cart.builder()
+                            .user(user)
+                            .totalPrice(0)
+                            .build();
+                    return cartRepository.save(cart);
+                });
     }
 
     public Cart getCart(Long userId) {

@@ -6,7 +6,6 @@ import api.kgu.nufarm.application.useritem.service.UserItemService;
 import api.kgu.nufarm.common.util.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,11 +31,10 @@ public class UserItemController {
     @Operation(summary = "작물 추가")
     @PostMapping(value ="/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<Long> addUserItem(
-            HttpServletRequest request,
             @RequestPart AddUserItemRequestDto dto,
             @RequestPart MultipartFile photoFile
     ) {
-        Long id = userItemService.addUserItem(request, dto, photoFile);
+        Long id = userItemService.addUserItem(dto, photoFile);
         return ApiResponse.success(id);
     }
 
