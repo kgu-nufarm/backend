@@ -28,6 +28,7 @@ public class S3Config {
                 .standard()
                 .withRegion(region)
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                .enableForceGlobalBucketAccess()
                 .build();
     }
 }
