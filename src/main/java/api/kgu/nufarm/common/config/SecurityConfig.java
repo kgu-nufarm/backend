@@ -40,6 +40,7 @@ public class SecurityConfig {
             "/api-docs/**",
             "/api/auth/**",
             "/api/sensor/addSensorResult/**",
+            "/api/notification/save",
             "/error"
     };
 

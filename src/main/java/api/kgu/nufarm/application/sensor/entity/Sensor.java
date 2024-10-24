@@ -3,6 +3,7 @@ package api.kgu.nufarm.application.sensor.entity;
 import api.kgu.nufarm.application.sensor.dto.SensorRequestDto;
 import api.kgu.nufarm.application.useritem.entity.UserItem;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,7 +29,7 @@ public class Sensor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_item_id")
     private UserItem userItem;  // 사용자 작물
 

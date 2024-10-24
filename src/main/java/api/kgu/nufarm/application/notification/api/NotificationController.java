@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,11 +22,12 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "알림 저장")
     @GetMapping("/save")
-    public ApiResponse<Long> save() {
-        Long id = notificationService.saveNotification();
+    public ApiResponse<Long> save(
+            @RequestParam Long userId
+    ) {
+        Long id = notificationService.saveNotification(userId);
         return ApiResponse.success(id);
     }
 
